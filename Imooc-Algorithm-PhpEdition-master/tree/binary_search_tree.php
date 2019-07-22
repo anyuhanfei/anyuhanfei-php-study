@@ -8,7 +8,7 @@
  * @param [type] $value 要查找的元素值
  * @return void
  */
-function binary_search_iteratime($arr, $value){
+function binary_search_iteration($arr, $value){
     $arr_count = count($arr);
     $left = 0;
     $right = $arr_count - 1;
@@ -30,8 +30,8 @@ function binary_search_iteratime($arr, $value){
  * 查询到第一个符合要求的值后直接返回响应的索引（递归版）
  *
  * @param array $arr 有序一维数组
- * @param int $left 左边界
- * @param int $right 右边界（数组元素总数减一）
+ * @param int $left 左边界（闭区间）
+ * @param int $right 右边界（闭区间，数组元素总数减一）
  * @param [type] $value 要查找的元素值
  * @return void
  */
@@ -55,9 +55,9 @@ function binary_search_recursion($arr, $left, $right, $value){
  *
  * @param array $arr 有序数组
  * @param [type] $value 要查找的元素值
- * @return array 与指定值相同的元素索引范围，闭区间（如果没有则为两个连续的数）
+ * @return array 与指定值相同的元素索引范围，开区间（如果没有则为两个连续的数）
  */
-function binary_search_iteratime_ceil_and_floor($arr, $value){
+function binary_search_iteration_ceil_and_floor($arr, $value){
     $count = count($arr);
     $left = 0;
     $right = $count - 1;
@@ -87,10 +87,10 @@ function binary_search_iteratime_ceil_and_floor($arr, $value){
  * 查找出所有值为指定值的元素（递归版）
  *
  * @param array $arr 有序数组
- * @param int $left 左边界（开区间）
- * @param int $right 右边界（开区间）
+ * @param int $left 左边界（闭区间）
+ * @param int $right 右边界（闭区间）
  * @param [type] $value 要查找的元素值
- * @return array 与指定值相同的元素索引范围，闭区间（如果没有则为两个连续的数）
+ * @return array 与指定值相同的元素索引范围，开区间（如果没有则为两个连续的数）
  */
 function binary_search_recursion_ceil_and_floor($arr, $left, $right, $value){
     if($left > $right){
