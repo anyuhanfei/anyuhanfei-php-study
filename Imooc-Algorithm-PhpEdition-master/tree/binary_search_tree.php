@@ -1,136 +1,179 @@
 <?php
+class TreeNode{
+    public function __construct($key, $value, $left = null, $right = null){
+        $this->key = $key;
+        $this->value = $value;
+        $this->left = $left;
+        $this->right = $right;
+    }
+}
 
-/**
- * 二分查找
- * 查询到第一个符合要求的值后直接返回响应的索引（迭代版）
- *
- * @param array $arr 有序一维数组
- * @param [type] $value 要查找的元素值
- * @return void
- */
-function binary_search_iteration($arr, $value){
-    $arr_count = count($arr);
-    $left = 0;
-    $right = $arr_count - 1;
-    while($left <= $right){
-        $mid = intval($left + ($right - $left) / 2);
-        if($arr[$mid] == $value){
-            return $mid;
-        }elseif($arr[$mid] > $value){
-            $right = $mid - 1;
+class BinarySearchTree{
+    /**
+     * 初始化数据
+     *
+     * @param array|null root 树
+     * @param int count 二叉树中的节点总数
+     */
+    public function __construct(){
+        $this->root = null;
+        $this->count = 0;
+    }
+
+    /**
+     * 在二叉树上添加节点，引用方法
+     *
+     * @param string $key 键
+     * @param string|array $value 值
+     * @param string $type 执行方法
+     * @return void
+     */
+    public function insert($key, $value, $type = "iteration"){
+        if($this->root == null){
+            $this->root = new TreeNode($key, $value);
         }else{
-            $left = $mid + 1;
+            if($type == "iteration"){
+                $this->_insert_iteration($this->root, $key, $value);
+            }else{
+                $this->_insert_recursion($this->root, $key, $value);
+            }
         }
+        $this->count++;
     }
-    return -1;
-}
 
-/**
- * 二分查找
- * 查询到第一个符合要求的值后直接返回响应的索引（递归版）
- *
- * @param array $arr 有序一维数组
- * @param int $left 左边界（闭区间）
- * @param int $right 右边界（闭区间，数组元素总数减一）
- * @param [type] $value 要查找的元素值
- * @return void
- */
-function binary_search_recursion($arr, $left, $right, $value){
-    if($left > $right){
-        return -1;
+    /**
+     * 在二叉树上添加节点，执行方法，迭代版
+     *
+     * @param object $node 当前节点
+     * @param string $key 键
+     * @param string $value 值
+     * @return void
+     */
+    private function _insert_iteration($node, $key, $value){
+        while($node != null){
+            if($node->key == $key){
+                $node->value = $value;
+                $this->count--;
+                return;
+            }elseif($node->key > $key){
+                if($node->left == null){
+                    $node->left = new TreeNode($key, $value);
+                    return;
+                }else{
+                    $node = $node->left;
+                }
+            }else{
+                if($node->right == null){
+                    $node->right = new TreeNode($key, $value);
+                    return;
+                }else{
+                    $node = $node->right;
+                }
+            }
+        }
+        return;
     }
-    $mid = intval($left + ($right - $left) / 2);
-    if($arr[$mid] == $value){
-        return $mid;
-    }elseif($arr[$mid] > $value){
-        return binary_search_recursion($arr, $left, $mid - 1, $value);
-    }else{
-        return binary_search_recursion($arr, $mid + 1, $right, $value);
-    }
-}
 
-/**
- * 二分查找
- * 查找出所有值为指定值的元素（迭代版）
- *
- * @param array $arr 有序数组
- * @param [type] $value 要查找的元素值
- * @return array 与指定值相同的元素索引范围，开区间（如果没有则为两个连续的数）
- */
-function binary_search_iteration_ceil_and_floor($arr, $value){
-    $count = count($arr);
-    $left = 0;
-    $right = $count - 1;
-    while($left <= $right){
-        $mid = intval($left + ($right - $left) / 2);
-        if($arr[$mid] == $value){
-            $ceil = $mid + 1;
-            $floor = $mid - 1;
-            while($arr[$ceil] == $value){
-                $ceil++;
+    /**
+     * 在二叉树上添加节点，执行方法，递归版
+     *
+     * @param object $node 当前节点
+     * @param string $key 键
+     * @param string $value 值
+     * @return void
+     */
+    private function _insert_recursion($node, $key, $value){
+        if($node->key == $key){
+            $node->value = $value;
+            $this->count--;
+        }elseif($node->key > $key){
+            if($node->left == null){
+                $node->left = new TreeNode($key, $value);
+                return;
+            }else{
+                $this->_insert_recursion($node->left, $key, $value);
             }
-            while($arr[$floor] == $value){
-                $floor--;
-            }
-            return array($floor, $ceil);
-        }elseif($arr[$mid] > $value){
-            $right = $mid - 1;
         }else{
-            $left = $mid + 1;
+            if($node->right == null){
+                $node->right = new TreeNode($key, $value);
+                return;
+            }else{
+                $this->_insert_recursion($node->right, $key, $value);
+            }
         }
     }
-    return array($right, $left);
-}
 
-/**
- * 二分查找法
- * 查找出所有值为指定值的元素（递归版）
- *
- * @param array $arr 有序数组
- * @param int $left 左边界（闭区间）
- * @param int $right 右边界（闭区间）
- * @param [type] $value 要查找的元素值
- * @return array 与指定值相同的元素索引范围，开区间（如果没有则为两个连续的数）
- */
-function binary_search_recursion_ceil_and_floor($arr, $left, $right, $value){
-    if($left > $right){
-        return array($right, $left);
-    }
-    $mid = intval($left + ($right - $left) / 2);
-    if($arr[$mid] == $value){
-        $ceil = $mid + 1;
-        $floor = $mid - 1;
-        while($arr[$ceil] == $value){
-            $ceil++;
+    /**
+     * 获取一个键对应的值，引用方法
+     *
+     * @param string $key 键
+     * @param string $type 执行方法选择，iteration：迭代版；recursion：递归版
+     * @return string|null
+     */
+    public function get($key, $type = "iteration"){
+        if($this->root != null){
+            if($this->root->key == $key){
+                return $this->root->value;
+            }else{
+                if($type == "iteration"){
+                    $res = $this->_get_iteration($this->root, $key);
+                }else{
+                    $res = $this->_get_recursion($this->root, $key);
+                }
+                return $res != null ? $res->value : null;
+            }
+        }else{
+            return null;
         }
-        while($arr[$floor] == $value){
-            $floor--;
+    }
+
+    /**
+     * 获取一个键对应的值，执行方法，递归版
+     *
+     * @param object $node 当前节点
+     * @param string $key 键
+     * @return object|null
+     */
+    private function _get_recursion($node, $key){
+        if($node == null){
+            return null;
         }
-        return array($floor, $ceil);
-    }elseif($arr[$mid] > $value){
-        return binary_search_recursion_ceil_and_floor($arr, $left, $mid - 1, $value);
-    }else{
-        return binary_search_recursion_ceil_and_floor($arr, $mid + 1, $right, $value);
+        if($node->key == $key){
+            return $node;
+        }elseif($node->key > $key){
+            return $this->_get_recursion($node->left, $key);
+        }else{
+            return $this->_get_recursion($node->right, $key);
+        }
+        return null;
+    }
+
+    /**
+     * 获取一个键对应的值，执行方法，迭代版
+     *
+     * @param object $node 当前节点
+     * @param string $key 键
+     * @return void
+     */
+    private function _get_iteration($node, $key){
+        while($node != null){
+            if($node->key == $key){
+                return $node;
+            }elseif($node->key > $key){
+                $node = $node->left;
+            }else{
+                $node = $node->right;
+            }
+        }
+        return null;
     }
 }
 
 
-
-$arr = [];
-for($i=1; $i < 10; $i++){
-    if($i == 5){
-        $arr[] = $i;
-        $arr[] = $i;
-        $arr[] = $i;
-    }
-    $arr[] = $i;
+$b = new BinarySearchTree();
+for($i=0;$i<10;$i++){
+    $value = $i + 100;
+    $b->insert($i, $value, 'recursion');
 }
-print_r($arr);
-$value = 5;
-print_r(binary_search_recursion($arr, 0, count($arr) - 1, $value));
-echo "\n";
-print_r(binary_search_iteratime($arr, $value));
-echo "\n";
-print_r(binary_search_iteratime_ceil_and_floor($arr, $value));
-echo "\n";
-print_r(binary_search_recursion_ceil_and_floor($arr, 0, count($arr) - 1, $value));
+print_r($b->root);
+print_r($b->get(4, 'iteration'));
